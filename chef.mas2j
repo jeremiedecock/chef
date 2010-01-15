@@ -1,0 +1,15 @@
+/* Jason Project */
+/* /usr/java/jdk1.6.0_12/bin/java -classpath /users/Etu8/2865428/bin/Jason-1.3.1/lib/ant-launcher.jar org.apache.tools.ant.launch.Launcher -e -f bin/build.xml run */
+/* Buildfile: bin/build.xml */
+
+MAS agentClean {
+
+    infrastructure: Centralised
+
+	environment: Env
+		
+	agents: chef     ./src/org/jdhp/chef/asl/agentChef.asl    [verbose=1];
+			serveur1 ./src/org/jdhp/chef/asl/agentServeur.asl [verbose=1];
+			serveur2 ./src/org/jdhp/chef/asl/agentServeur.asl [verbose=1];
+	
+}
