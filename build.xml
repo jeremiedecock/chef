@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
-<project name="Chef" basedir="." default="run">
+<project name="Chef" basedir="." default="help">
 
     <property name="src_dir" value="${basedir}/src"/>
     <property name="class_dir" value="${basedir}/bin"/>
@@ -56,6 +56,17 @@
     -->
 
     
+    <target name="debug" depends="build" >
+        <echo message="Running project ${ant.project.name}" />
+        <java classname="jason.infra.centralised.RunCentralisedMAS"
+              failonerror="true" fork="yes" dir="${basedir}" >
+            <classpath refid="project.classpath"/>
+            <arg line="${mas2j.project.file} -debug"/>
+            <jvmarg line="-Xmx500M -Xss8M"/>    
+        </java>
+    </target>
+
+
     <target name="run" depends="build" >
         <echo message="Running project ${ant.project.name}" />
         <java classname="jason.infra.centralised.RunCentralisedMAS"
@@ -77,6 +88,21 @@
         <delete file="${dist_file}"/>
         <delete dir="${dist_project_dir}"/>
         <delete dir="${dist_dir}"/>
+    </target>
+
+
+    <target name="help" description="Display help">
+        <echo>Usage : ant TARGET</echo>
+        <echo></echo>
+        <echo>TARGETS :</echo>
+        <echo>   build     generate class files</echo>
+        <!--<echo>jar       generate the jar file</echo>-->
+        <!--<echo>doc       generate documentation</echo>-->
+        <echo>   clean     remove class, doc, jar and dist files</echo>
+        <!--<echo>dist      generate the dist file (${dist_file})</echo>-->
+        <echo>   run       run the project</echo>
+        <echo>   debug     run the project with Jason's Mind Inspector</echo>
+        <echo>   help      print this message</echo>
     </target>
 
 </project>

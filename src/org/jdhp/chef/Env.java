@@ -6,9 +6,6 @@ import jason.asSyntax.*;
 import jason.environment.*;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 public class Env extends Environment {
@@ -22,8 +19,6 @@ public class Env extends Environment {
 	private HashMap<String, String> jobMap;
 	
 	private HashMap<String, String> positionMap;
-	
-	private HashMap<String, Window> windowMap;
 	
 	private String[] location = {"kitchen", "room"};
 	
@@ -42,7 +37,6 @@ public class Env extends Environment {
     	this.waitingOrder = 0;
     	this.jobMap = new HashMap<String, String>();
     	this.positionMap = new HashMap<String, String>();
-    	this.windowMap = new HashMap<String, Window>();
     	
 		//int random = (int) ((10 - 1) * Math.random());
 		//addPercept(Literal per);  // Ajoute une perception dans l'environement (ie pour tout le monde)
@@ -60,7 +54,6 @@ public class Env extends Environment {
         	
         	System.out.println(agName + " = " + action.getTerm(0));
         	this.jobMap.put(agName, action.getTerm(0).toString());
-        	this.windowMap.put(agName, new Window(agName));
         	
         } else if(action.getFunctor().equals("init")) { // punch in
         	
@@ -110,26 +103,8 @@ public class Env extends Environment {
         	
         }
         
-        // Update all agent's window
-        for(Entry<String, Window> entry : this.windowMap.entrySet()) {
-			String agent  = entry.getKey();
-			Window window = entry.getValue();
-			
-			if((window != null) && (agent != null) && (this.getPercepts(agent) != null)) {
-				List<Literal> percepts = this.getPercepts(agent);
-				System.out.println(percepts);
-				/*
-				Iterator<Literal> it = percepts.iterator();
-				while(it.hasNext()) {
-					System.out.println(it.next().toString());
-				}
-				//System.out.println(percepts.toString());
-				window.setPercepts(this.getPercepts(agent).toString());
-				*/
-			}
-        }
-        
-        // Slow down execution
+        // Slow down execution (useless : use -debug instead)
+        /*
         if(Env.tickDuration > 0) {
 	        try {
 				Thread.sleep(Env.tickDuration);
@@ -137,6 +112,7 @@ public class Env extends Environment {
 				e.printStackTrace();
 			}
         }
+        */
 		
         return true;
     }
