@@ -1,13 +1,17 @@
-/* Initial beliefs */
+/* ***************************** INITIAL BELIEFS *************************** */
 
 started.
 myJob(server).
 
-/* Initial goals */
+/* ****************************** INITIAL GOALS **************************** */
 
 
 
-/* Plans */
+/* ********************************** PLANS ******************************** */
+
+
+/* ************************************ */
+
 
 +started :
     myJob(J) &
@@ -28,6 +32,9 @@ myJob(server).
     .abolish(lookingForIntroduce(Name)).
 
 
+/* ************************************ */
+
+
 +!getOrder :
     location(kitchen)
 <-
@@ -39,44 +46,50 @@ myJob(server).
     location(room)
 <-
     getAnOrder;                        // env : appelle fonc de l'env qui génere la commande (aleatoirement) et qui ajoute les croyances enAttente
-    !placeAnOrder.                     // passe la commande auprès du chef // placeAnOrder
-    //!getOrder.                         // TODO ?????
+    !passAnOrder.                      // passe la commande auprès du chef
  
 
-+!placeAnOrder :
+/* ************************************ */
+
+
++!passAnOrder :                                    // transmet une commande au chef
     location(room)
 <-
     goto(kitchen);
-    !placeAnOrder.
+    !passAnOrder.
 
 
-+!placeAnOrder :
-    location(kitchen)           &
-    isWaiting(entree, X, P)     &      // passe la commande en cuisine si l'env a mis en attente une commande
-    isWaiting(mainCourse, Y, P) &      // passe la commande en cuisine si l'env a mis en attente une commande
-    isWaiting(dessert, Z, P)    &      // passe la commande en cuisine si l'env a mis en attente une commande
-    job(C, chef)                &      // pour savoir qui est le chef
-    .my_name(N)                        // récupere mon nom
++!passAnOrder :                                    // transmet une commande au chef
+    location(kitchen)                       &
+    isWaiting(entree,     ELabel, CourseId) &      // passe la commande en cuisine si l'env a mis en attente une commande
+    isWaiting(mainCourse, MLabel, CourseId) &      // passe la commande en cuisine si l'env a mis en attente une commande
+    isWaiting(dessert,    DLabel, CourseId) &      // passe la commande en cuisine si l'env a mis en attente une commande
+    job(ChefName, chef)                     &      // pour savoir qui est le chef
+    .my_name(MyName)                               // récupere mon nom
 <-
-    isBeingCooked(X, Y, Z, P);         // supp plats en attente et passe encours
-    .send(C, achieve, entree(X, P, N));
-    .send(C, achieve, plat(Y, P, N));
-    .send(C, achieve, dessert(Z, P, N)).
+    isBeingCooked(ELabel, MLabel, DLabel, CourseId);         // supp plats en attente et passe encours
+    .send(ChefName, achieve, entree(    ELabel, CourseId, MyName));
+    .send(ChefName, achieve, mainCourse(MLabel, CourseId, MyName));
+    .send(ChefName, achieve, dessert(   DLabel, CourseId, MyName)).
 
 
-+!serveOrder(N) :
+/* ************************************ */
+
+
++!serveOrder(CourseId) :
     location(kitchen)
 <-
-    goto(kitchen);
-    !serveOrder(N).
+    goto(room);
+    !serveOrder(CourseId).
  
 
-+!serveOrder(N) :
-    isReady(entree, X, N)     &
-    isReady(mainCourse, Y, N) &
-    isReady(dessert, Z, N)    &
++!serveOrder(CourseId) :
+    isReady(entree,     ELabel, CourseId) &
+    isReady(mainCourse, MLabel, CourseId) &
+    isReady(dessert,    DLabel, CourseId) &
     location(room)
 <-
-    serveClient.                      // env : fonc de l'env qui supprime les 3 litéraux "pret" // ???
+    serveClient;                      // env : fonc de l'env qui supprime les 3 litéraux "pret" // ???
+    !getOrder.
 
 

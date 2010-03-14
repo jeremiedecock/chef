@@ -88,18 +88,6 @@ public class Restaurant extends Environment {
 	        	this.addPercept(agName, Literal.parseLiteral("isWaiting(dessert, " + dessertOredred + ", " + this.orderId + ")"));
         	}
         	
-        } else if(action.getFunctor().equals("placeAnOrder")) {
-        	
-        	this.logger.log(Level.INFO, "le chef s'est enregistré");
-        
-        } else if(action.getFunctor().equals("cook")) {
-        	
-        	this.logger.log(Level.INFO, "executing: " + action + ", but not implemented!");
-        
-        } else if(action.getFunctor().equals("updateAttente")) {
-        	
-        	this.logger.log(Level.INFO, "executing: " + action + ", but not implemented!");
-        	
         } else if(action.getFunctor().equals("serveOrder")) {
         	
         	this.waitingOrder--;

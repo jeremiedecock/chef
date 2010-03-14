@@ -1,13 +1,17 @@
-/* Initial beliefs */
+/* ***************************** INITIAL BELIEFS *************************** */
 
 started.
 myJob(chef).
 
-/* Initial goals */
+/* ****************************** INITIAL GOALS **************************** */
 
 
 
-/* Plans */
+/* ********************************** PLANS ******************************** */
+
+
+/* ************************************ */
+
 
 +started :
     myJob(J) &
@@ -27,22 +31,37 @@ myJob(chef).
     .abolish(lookingForIntroduce(Name)).
 
 
-+!entree(X, P, N) :
+/* ************************************ */
+
+
++!entree(Label, CourseId, ServerName) :
     true
 <-
-    cook(entree, X, P, N).
+    .wait(500);
+    cook(entree, Label, CourseId, ServerName);
+    //isReady(entree, Label, CourseId);
+    .send(ServerName, tell, isReady(entree, Label, CourseId)).
 
 
-+!plat(X, P, N) :
++!mainCourse(Label, CourseId, ServerName) :
     true
 <-
-    cook(plat, X, P, N).
+    .wait(500);
+    cook(mainCourse, Label, CourseId, ServerName);
+    //isReady(mainCourse, Label, CourseId);
+    .send(ServerName, tell, isReady(mainCourse, Label, CourseId)).
 
 
-+!dessert(X, P, N) :
++!dessert(Label, CourseId, ServerName) :
     true
 <-
-    cook(dessert, X, P, N);
-    .print(N);
-    .send(N, achieve, deliverCommand(P)).
+    .wait(500);
+    cook(dessert, Label, CourseId, ServerName);
+    //isReady(dessert, Label, CourseId);
+    .send(ServerName, tell, isReady(dessert, Label, CourseId));
+    .send(ServerName, achieve, serveOrder(CourseId)).
+
+
+/* ************************************ */
+
 
