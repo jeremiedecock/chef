@@ -90,6 +90,8 @@ myJob(server).
     location(room)
 <-
     serveClient;                      // env : fonc de l'env qui supprime les 3 litéraux "pret" // ???
+    .abolish(isWaiting(_, _, CourseId));
+    .abolish(isReady(_, _, CourseId));
     !getOrder.
 
 
