@@ -9,13 +9,13 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Env extends Environment {
+public class Restaurant extends Environment {
 	
 	public final static int tickDuration = 1000;   // tick duration in ms
 	
 	private int orderId, waitingOrder;
 	
-	private Logger logger = Logger.getLogger(Env.class.getName());
+	private Logger logger = Logger.getLogger(Restaurant.class.getName());
 	
 	private HashMap<String, String> jobMap;
 	
