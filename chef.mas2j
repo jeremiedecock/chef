@@ -8,8 +8,12 @@ MAS chef {
 
 	environment: org.jdhp.chef.Env
 
-	agents: chef     ./src/org/jdhp/chef/asl/agentChef.asl    [verbose=1];
-			serveur  ./src/org/jdhp/chef/asl/agentServeur.asl [verbose=1];
-			/*serveur2 ./src/org/jdhp/chef/asl/agentServeur.asl [verbose=1];*/
+	agents: charles    ./src/org/jdhp/chef/asl/agentChef.asl    [verbose=1];
+			sebastien  ./src/org/jdhp/chef/asl/agentServeur.asl [verbose=1];
+			//stephane   ./src/org/jdhp/chef/asl/agentServeur.asl [verbose=1];
+			//steve      ./src/org/jdhp/chef/asl/agentServeur.asl [verbose=1];
+			//sophie     ./src/org/jdhp/chef/asl/agentServeur.asl [verbose=1];
+			//stephanie  ./src/org/jdhp/chef/asl/agentServeur.asl [verbose=1];
+			//solene     ./src/org/jdhp/chef/asl/agentServeur.asl [verbose=1];
 
 }

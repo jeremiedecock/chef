@@ -23,7 +23,8 @@ myJob(chef).
     myJob(Job) &
     .my_name(Me)
 <-
-    .send(Name, tell, job(Me, Job)).
+    .send(Name, tell, job(Me, Job));
+    .abolish(lookingForIntroduce(Name)).
 
 
 +!entree(X, P, N) :

@@ -6,6 +6,7 @@ import jason.asSyntax.*;
 import jason.environment.*;
 
 import java.util.HashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Env extends Environment {
@@ -38,6 +39,8 @@ public class Env extends Environment {
     	this.jobMap = new HashMap<String, String>();
     	this.positionMap = new HashMap<String, String>();
     	
+    	this.logger.setLevel(Level.INFO);
+    	
 		//int random = (int) ((10 - 1) * Math.random());
 		//addPercept(Literal per);  // Ajoute une perception dans l'environement (ie pour tout le monde)
 		//addPercept(String agName, Literal arg1); // Ajoute une perception pour l'agent agName
@@ -48,23 +51,23 @@ public class Env extends Environment {
 	 */
     @Override
     public boolean executeAction(String agName, Structure action) {
-        logger.info("[" + agName + "] : " + action);
+        this.logger.log(Level.INFO, "[" + agName + "] : " + action);
 		
         if(action.getFunctor().equals("register")) {
         	
-        	System.out.println(agName + " = " + action.getTerm(0));
+        	this.logger.log(Level.INFO, "\t" + agName + " = " + action.getTerm(0));
         	this.jobMap.put(agName, action.getTerm(0).toString());
         	
         } else if(action.getFunctor().equals("init")) { // punch in
         	
-        	logger.info("Init " + agName + " -> clear percepts and set location");
+        	this.logger.log(Level.INFO, "\t" + "init " + agName + " (clear percepts and set location)");
         	this.clearPercepts(agName);
         	this.positionMap.put(agName, location[0]);
         	this.addPercept(agName, Literal.parseLiteral("location(" + this.positionMap.get(agName) + ")"));
         	
         } else if(action.getFunctor().equals("goto")) {
         	
-        	System.out.println(agName + " move from " + this.positionMap.get(agName) + " to " + action.getTerm(0));
+        	this.logger.log(Level.INFO, "\t" + agName + " is moving from " + this.positionMap.get(agName) + " to " + action.getTerm(0));
         	this.removePercept(agName, Literal.parseLiteral("location(" + this.positionMap.get(agName) + ")"));
         	this.positionMap.put(agName, action.getTerm(0).toString());
         	this.addPercept(agName, Literal.parseLiteral("location(" + action.getTerm(0) + ")"));
@@ -79,7 +82,7 @@ public class Env extends Environment {
 	        	String entreeOredred = this.entree[(int) ((this.entree.length - 1) * Math.random())];
 	        	String mainCourseOredred = this.mainCourse[(int) ((this.mainCourse.length - 1) * Math.random())];
 	        	String dessertOredred = this.dessert[(int) ((this.dessert.length - 1) * Math.random())];
-	        	logger.info("Get an order : " + entreeOredred + ", " + mainCourseOredred + ", " + dessertOredred);
+	        	this.logger.log(Level.INFO, "\t" + agName + " <- menu(" + entreeOredred + ", " + mainCourseOredred + ", " + dessertOredred + ")");
 	        	this.addPercept(agName, Literal.parseLiteral("isWaiting(entree, " + entreeOredred + ", " + this.orderId + ")"));
 	        	this.addPercept(agName, Literal.parseLiteral("isWaiting(mainCourse, " + mainCourseOredred + ", " + this.orderId + ")"));
 	        	this.addPercept(agName, Literal.parseLiteral("isWaiting(dessert, " + dessertOredred + ", " + this.orderId + ")"));
@@ -87,15 +90,15 @@ public class Env extends Environment {
         	
         } else if(action.getFunctor().equals("placeAnOrder")) {
         	
-        	logger.info("le chef s'est enregistré");
+        	this.logger.log(Level.INFO, "le chef s'est enregistré");
         
         } else if(action.getFunctor().equals("cook")) {
         	
-        	logger.info("executing: " + action + ", but not implemented!");
+        	this.logger.log(Level.INFO, "executing: " + action + ", but not implemented!");
         
         } else if(action.getFunctor().equals("updateAttente")) {
         	
-        	logger.info("executing: " + action + ", but not implemented!");
+        	this.logger.log(Level.INFO, "executing: " + action + ", but not implemented!");
         	
         } else if(action.getFunctor().equals("serveOrder")) {
         	
@@ -124,5 +127,6 @@ public class Env extends Environment {
     public void stop() {
         super.stop();
     }
+
 }
 
