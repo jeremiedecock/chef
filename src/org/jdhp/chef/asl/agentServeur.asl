@@ -67,13 +67,18 @@ myJob(server).
     job(ChefName, chef)                     &      // pour savoir qui est le chef
     .my_name(MyName)                               // récupere mon nom
 <-
-    isBeingCooked(ELabel, MLabel, DLabel, CourseId);         // supp plats en attente et passe encours
-    .send(ChefName, achieve, entree(    ELabel, CourseId, MyName));
-    .send(ChefName, achieve, mainCourse(MLabel, CourseId, MyName));
-    .send(ChefName, achieve, dessert(   DLabel, CourseId, MyName)).
+    .send(ChefName, achieve, allocate(entree,     ELabel, CourseId, MyName));
+    .send(ChefName, achieve, allocate(mainCourse, MLabel, CourseId, MyName));
+    .send(ChefName, achieve, allocate(dessert,    DLabel, CourseId, MyName)).
 
 
 /* ************************************ */
+
+
+-isWaiting(Type, Label, CourseId)[source(_)] :
+    true
+<-
+    .abolish(isWaiting(Type, Label, CourseId)).
 
 
 +!serveOrder(CourseId) :
@@ -81,17 +86,47 @@ myJob(server).
 <-
     goto(room);
     !serveOrder(CourseId).
+
+
++!serveOrder(CourseId) :                                // Entree
+    isReady(entree, ELabel, CourseId) &
+    location(room)
+<-
+    .abolish(isWaiting(entree, ELabel, CourseId));
+    .abolish(isReady(entree, ELabel, CourseId));
+    hasBeenServed(entree, ELabel, CourseId).            // + gestion emplacement + envoi environement
+ 
+
+//+!serveOrder(CourseId) :
+//    not hasBeenServed(entree, _, CourseId) &              // TODO
+//    isReady(mainCourse, MLabel, CourseId)   &
+//    location(room)
+//<-
+//    .print("wait");
+//    wait("+hasBeenServed(entree, _, CourseId)");              // TODO
+//    !serveOrder(CourseId).
  
 
 +!serveOrder(CourseId) :
-    isReady(entree,     ELabel, CourseId) &
-    isReady(mainCourse, MLabel, CourseId) &
-    isReady(dessert,    DLabel, CourseId) &
+    //hasBeenServed(entree, _, CourseId) &              // TODO
+    isReady(mainCourse, MLabel, CourseId)   &
     location(room)
 <-
-    serveClient;                      // env : fonc de l'env qui supprime les 3 litéraux "pret" // ???
-    .abolish(isWaiting(_, _, CourseId));
-    .abolish(isReady(_, _, CourseId));
+    .abolish(isWaiting(mainCourse, MLabel, CourseId));
+    .abolish(isReady(mainCourse, MLabel, CourseId));
+    hasBeenServed(mainCourse, MLabel, CourseId).        // + gestion emplacement + envoi environement
+ 
+
++!serveOrder(CourseId) :
+    //hasBeenServed(mainCourse, _, CourseId) &              // TODO
+    isReady(dessert, _, CourseId)          &
+    location(room)
+<-
+    .abolish(isWaiting(dessert, _, CourseId));
+    .abolish(isReady(dessert, _, CourseId));
+    .abolish(hasBeenServed(entree, _, CourseId));
+    .abolish(hasBeenServed(mainCourse, _, CourseId));
     !getOrder.
 
+ 
 

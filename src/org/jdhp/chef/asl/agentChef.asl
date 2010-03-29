@@ -34,34 +34,63 @@ myJob(chef).
 /* ************************************ */
 
 
-+!entree(Label, CourseId, ServerName) :
+
++!allocate(entree, ELabel, CourseId, ServerName) :
     true
 <-
-    .wait(500);
-    cook(entree, Label, CourseId, ServerName);
-    //isReady(entree, Label, CourseId);
-    .send(ServerName, tell, isReady(entree, Label, CourseId)).
+    .send(ServerName, tell, isBeingCooked(entree, ELabel, CourseId));
+    .send(ServerName, untell, isWaiting(entree, ELabel, CourseId));
+
+    !cook(entree, ELabel, CourseId, ServerName);
+
+    .send(ServerName, tell, isReady(entree, ELabel, CourseId));
+    .send(ServerName, untell, isBeingCooked(entree, ELabel, CourseId));
+
+    //.send(ServerName, achieve, serveOrder(CourseId)).
 
 
-+!mainCourse(Label, CourseId, ServerName) :
++!allocate(mainCourse, MLabel, CourseId, ServerName) :
     true
 <-
-    .wait(500);
-    cook(mainCourse, Label, CourseId, ServerName);
-    //isReady(mainCourse, Label, CourseId);
-    .send(ServerName, tell, isReady(mainCourse, Label, CourseId)).
+    .send(ServerName, tell, isBeingCooked(mainCourse, MLabel, CourseId));
+    .send(ServerName, untell, isWaiting(mainCourse, MLabel, CourseId));
+
+    !cook(mainCourse, MLabel, CourseId, ServerName);
+
+    .send(ServerName, tell, isReady(mainCourse, MLabel, CourseId));
+    .send(ServerName, untell, isBeingCooked(mainCourse, MLabel, CourseId));
+
+    //.send(ServerName, achieve, serveOrder(CourseId)).
 
 
-+!dessert(Label, CourseId, ServerName) :
++!allocate(dessert, DLabel, CourseId, ServerName) :
     true
 <-
+    .send(ServerName, tell, isBeingCooked(dessert, DLabel, CourseId));
+    .send(ServerName, untell, isWaiting(dessert, DLabel, CourseId));
+
+    !cook(dessert, DLabel, CourseId, ServerName);
+
+    .send(ServerName, tell, isReady(dessert, DLabel, CourseId));
+    .send(ServerName, untell, isBeingCooked(dessert, DLabel, CourseId));
+
+    //.send(ServerName, achieve, serveOrder(CourseId)).
+    
+
++!cook(Type, Label, CourseId, ServerName) :
+    true
+<-
+    .abolish(isWaiting(Type, ELabel, CourseId));
+    isBeingCooked(Type, ELabel, CourseId);
     .wait(500);
-    cook(dessert, Label, CourseId, ServerName);
-    //isReady(dessert, Label, CourseId);
-    .send(ServerName, tell, isReady(dessert, Label, CourseId));
-    .send(ServerName, achieve, serveOrder(CourseId)).
+    .abolish(isBeingCooked(Type, ELabel, CourseId));
+    isReady(Type, ELabel, CourseId, ServerName).
+
+
 
 
 /* ************************************ */
+
+
 
 
