@@ -90,6 +90,7 @@ public class Restaurant extends Environment {
         	
         } else if(action.getFunctor().equals("serveOrder")) {
         	
+        	this.logger.log(Level.INFO, "\t" + agName + " has served " + action.getTerm(0) + " " + action.getTerm(1) + " " + action.getTerm(2));
         	this.waitingOrder--;
         	
         }

@@ -75,58 +75,56 @@ myJob(server).
 /* ************************************ */
 
 
--isWaiting(Type, Label, CourseId)[source(_)] :
++isReady(entree, Label, CourseId)[source(_)] :
     true
 <-
-    .abolish(isWaiting(Type, Label, CourseId)).
-
-
-+!serveOrder(CourseId) :
-    location(kitchen)
-<-
-    goto(room);
-    !serveOrder(CourseId).
-
-
-+!serveOrder(CourseId) :                                // Entree
-    isReady(entree, ELabel, CourseId) &
-    location(room)
-<-
-    .abolish(isWaiting(entree, ELabel, CourseId));
-    .abolish(isReady(entree, ELabel, CourseId));
-    hasBeenServed(entree, ELabel, CourseId).            // + gestion emplacement + envoi environement
+    !takeCourse(entree, Label, CourseId).
  
 
-//+!serveOrder(CourseId) :
-//    not hasBeenServed(entree, _, CourseId) &              // TODO
-//    isReady(mainCourse, MLabel, CourseId)   &
-//    location(room)
-//<-
-//    .print("wait");
-//    wait("+hasBeenServed(entree, _, CourseId)");              // TODO
-//    !serveOrder(CourseId).
++isReady(mainCourse, Label, CourseId)[source(_)]   :
+    hasBeenServed(entree, _, CourseId)
+<-
+    !takeCourse(mainCourse, Label, CourseId).
  
 
-+!serveOrder(CourseId) :
-    //hasBeenServed(entree, _, CourseId) &              // TODO
-    isReady(mainCourse, MLabel, CourseId)   &
-    location(room)
++isReady(dessert, _, CourseId)[source(_)] : 
+    hasBeenServed(mainCourse, _, CourseId)
 <-
-    .abolish(isWaiting(mainCourse, MLabel, CourseId));
-    .abolish(isReady(mainCourse, MLabel, CourseId));
-    hasBeenServed(mainCourse, MLabel, CourseId).        // + gestion emplacement + envoi environement
- 
-
-+!serveOrder(CourseId) :
-    //hasBeenServed(mainCourse, _, CourseId) &              // TODO
-    isReady(dessert, _, CourseId)          &
-    location(room)
-<-
-    .abolish(isWaiting(dessert, _, CourseId));
-    .abolish(isReady(dessert, _, CourseId));
+    !takeCourse(dessert, Label, CourseId);
     .abolish(hasBeenServed(entree, _, CourseId));
     .abolish(hasBeenServed(mainCourse, _, CourseId));
+    .abolish(hasBeenServed(desert, _, CourseId));
     !getOrder.
 
  
+/* ************************************ */
+
+
++!takeCourse(Course, Label, CourseId) :
+    location(room)
+<-
+    goto(kitchen);
+    !takeCourse(Course, Label, CourseId).
+
+
++!takeCourse(Course, Label, CourseId) :
+    location(kitchen)
+<-
+    !serveCourse(Course, Label, CourseId).
+
+
++!serveCourse(Course, Label, CourseId) :
+    location(kitchen)
+<-
+    goto(room);
+    !serveCourse(Course, Label, CourseId).
+
+
++!serveCourse(Course, Label, CourseId) :
+    location(room)
+<-
+    serveOrder(Course, Label, CourseId);
+    .abolish(isWaiting(Course, Label, CourseId));
+    .abolish(isReady(Course, Label, CourseId));
+    hasBeenServed(Course, Label, CourseId).
 

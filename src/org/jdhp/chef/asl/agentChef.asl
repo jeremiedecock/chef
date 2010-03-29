@@ -44,9 +44,7 @@ myJob(chef).
     !cook(entree, ELabel, CourseId, ServerName);
 
     .send(ServerName, tell, isReady(entree, ELabel, CourseId));
-    .send(ServerName, untell, isBeingCooked(entree, ELabel, CourseId));
-
-    //.send(ServerName, achieve, serveOrder(CourseId)).
+    .send(ServerName, untell, isBeingCooked(entree, ELabel, CourseId)).
 
 
 +!allocate(mainCourse, MLabel, CourseId, ServerName) :
@@ -58,9 +56,7 @@ myJob(chef).
     !cook(mainCourse, MLabel, CourseId, ServerName);
 
     .send(ServerName, tell, isReady(mainCourse, MLabel, CourseId));
-    .send(ServerName, untell, isBeingCooked(mainCourse, MLabel, CourseId));
-
-    //.send(ServerName, achieve, serveOrder(CourseId)).
+    .send(ServerName, untell, isBeingCooked(mainCourse, MLabel, CourseId)).
 
 
 +!allocate(dessert, DLabel, CourseId, ServerName) :
@@ -72,25 +68,20 @@ myJob(chef).
     !cook(dessert, DLabel, CourseId, ServerName);
 
     .send(ServerName, tell, isReady(dessert, DLabel, CourseId));
-    .send(ServerName, untell, isBeingCooked(dessert, DLabel, CourseId));
-
-    //.send(ServerName, achieve, serveOrder(CourseId)).
+    .send(ServerName, untell, isBeingCooked(dessert, DLabel, CourseId)).
     
-
-+!cook(Type, Label, CourseId, ServerName) :
-    true
-<-
-    .abolish(isWaiting(Type, ELabel, CourseId));
-    isBeingCooked(Type, ELabel, CourseId);
-    .wait(500);
-    .abolish(isBeingCooked(Type, ELabel, CourseId));
-    isReady(Type, ELabel, CourseId, ServerName).
-
-
 
 
 /* ************************************ */
 
 
++!cook(Type, Label, CourseId, ServerName) :
+    true
+<-
+    .abolish(isWaiting(Type, Label, CourseId));
+    isBeingCooked(Type, Label, CourseId);
+    .wait(500);
+    .abolish(isBeingCooked(Type, Label, CourseId));
+    isReady(Type, Label, CourseId, ServerName).
 
 
