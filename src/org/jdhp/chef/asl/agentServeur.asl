@@ -82,21 +82,37 @@ myJob(server).
  
 
 +isReady(mainCourse, Label, CourseId)[source(_)]   :
-    hasBeenServed(entree, _, CourseId)
+    hasBeenServed(entree, CourseId)
 <-
     !takeCourse(mainCourse, Label, CourseId).
+
+
++isReady(mainCourse, Label, CourseId)[source(_)]   :
+    not hasBeenServed(entree, CourseId)
+<-
+    //wait(3000);
+    wait("+hasBeenServed(entree, CourseId)");
+    -+isReady(mainCourse, Label, CourseId).
  
 
-+isReady(dessert, _, CourseId)[source(_)] : 
-    hasBeenServed(mainCourse, _, CourseId)
++isReady(dessert, Label, CourseId)[source(_)] : 
+    hasBeenServed(mainCourse, CourseId)
 <-
     !takeCourse(dessert, Label, CourseId);
-    .abolish(hasBeenServed(entree, _, CourseId));
-    .abolish(hasBeenServed(mainCourse, _, CourseId));
-    .abolish(hasBeenServed(desert, _, CourseId));
+    .abolish(hasBeenServed(entree, CourseId));
+    .abolish(hasBeenServed(mainCourse, CourseId));
+    .abolish(hasBeenServed(desert, CourseId));
     !getOrder.
 
  
++isReady(dessert, Label, CourseId)[source(_)]   :
+    not hasBeenServed(mainCourse, CourseId)
+<-
+    //wait(3000);
+    wait("+hasBeenServed(mainCourse, CourseId)");
+    -+isReady(dessert, Label, CourseId).
+ 
+
 /* ************************************ */
 
 
@@ -125,6 +141,6 @@ myJob(server).
 <-
     serveOrder(Course, Label, CourseId);
     .abolish(isWaiting(Course, Label, CourseId));
-    .abolish(isReady(Course, Label, CourseId));
-    hasBeenServed(Course, Label, CourseId).
+    .abolish(isReady(Course, Label, CourseId)).
+    //+hasBeenServed(Course, CourseId).
 
