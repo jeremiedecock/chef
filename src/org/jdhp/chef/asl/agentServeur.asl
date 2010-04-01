@@ -72,6 +72,22 @@ myJob(server).
     .send(ChefName, achieve, allocate(dessert,    DLabel, CourseId, MyName)).
 
 
++!passAnOrder :
+    not isWaiting(_, _, _)
+<-
+    //wait(3000);
+    wait("+isWaiting(_, _, _)");
+    !passAnOrder.
+
+
++!passAnOrder :
+    not job(_, chef)
+<-
+    //wait(3000);
+    wait("+job(_, chef)");
+    !passAnOrder.
+
+
 /* ************************************ */
 
 

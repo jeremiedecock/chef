@@ -8,12 +8,15 @@ MAS chef {
 
 	environment: org.jdhp.chef.Restaurant
 
-	agents: charles    ./src/org/jdhp/chef/asl/agentChef.asl    [verbose=1];
-			sebastien  ./src/org/jdhp/chef/asl/agentServeur.asl [verbose=1];
+	agents: charles    ./src/org/jdhp/chef/asl/agentChef.asl      [verbose=1];
+			sebastien  ./src/org/jdhp/chef/asl/agentServeur.asl   [verbose=1];
 			//stephane   ./src/org/jdhp/chef/asl/agentServeur.asl [verbose=1];
 			//steve      ./src/org/jdhp/chef/asl/agentServeur.asl [verbose=1];
 			//sophie     ./src/org/jdhp/chef/asl/agentServeur.asl [verbose=1];
 			//stephanie  ./src/org/jdhp/chef/asl/agentServeur.asl [verbose=1];
 			//solene     ./src/org/jdhp/chef/asl/agentServeur.asl [verbose=1];
+			cedric     ./src/org/jdhp/chef/asl/commis.asl         [verbose=1];
+			//cecile     ./src/org/jdhp/chef/asl/commis.asl       [verbose=1];
+			patrick    ./src/org/jdhp/chef/asl/pastryChef.asl     [verbose=1];
 
 }

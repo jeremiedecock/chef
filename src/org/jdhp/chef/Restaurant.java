@@ -51,7 +51,10 @@ public class Restaurant extends Environment {
 	 */
     @Override
     public boolean executeAction(String agName, Structure action) {
-        this.logger.log(Level.INFO, "[" + agName + "] : " + action);
+    	
+    	if(!action.toString().substring(0, 4).trim().equals("wait")) {
+    		this.logger.log(Level.INFO, "[" + agName + "] : " + action);
+    	}
 		
         if(action.getFunctor().equals("register")) {
         	
@@ -90,10 +93,10 @@ public class Restaurant extends Environment {
         	
         } else if(action.getFunctor().equals("serveOrder")) {
         	
-        	this.logger.log(Level.INFO, "\t" + agName + " has served " + action.getTerm(0) + " " + action.getTerm(1) + " " + action.getTerm(2));
+        	this.logger.log(Level.INFO, "\t*** " + agName + " has served " + action.getTerm(0) + " " + action.getTerm(1) + " " + action.getTerm(2) + " ***");
         	this.addPercept(agName, Literal.parseLiteral("hasBeenServed(" + action.getTerm(0) + ", " + action.getTerm(2) + ")"));
         	this.waitingOrder--;
-        	
+        
         }
         
         // Slow down execution (useless : use -debug instead)

@@ -36,52 +36,97 @@ myJob(chef).
 
 
 +!allocate(entree, ELabel, CourseId, ServerName) :
-    true
+    .findall(elem(Num, Name), job(Name, commis) & .count(isCooking(Name, _), Num), List) &
+    .sort(List, SortedList) &
+    .length(SortedList, Size) &
+    Size > 0 &
+    .nth(0, SortedList, elem(Num, Name)) &
+    .my_name(Me)
 <-
-    .send(ServerName, tell, isBeingCooked(entree, ELabel, CourseId));
-    .send(ServerName, untell, isWaiting(entree, ELabel, CourseId));
-
-    !cook(entree, ELabel, CourseId, ServerName);
-
-    .send(ServerName, tell, isReady(entree, ELabel, CourseId));
-    .send(ServerName, untell, isBeingCooked(entree, ELabel, CourseId)).
+    +isCooking(Name, CourseId);
+    .send(Name, achieve, cook(entree, ELabel, CourseId, ServerName, Me)).
 
 
 +!allocate(mainCourse, MLabel, CourseId, ServerName) :
-    true
+    (not (MLabel == ratatouille)) &
+    .findall(elem(Num, Name), job(Name, commis) & .count(isCooking(Name, _), Num), List) &
+    .sort(List, SortedList) &
+    .length(SortedList, Size) &
+    Size > 0 &
+    .nth(0, SortedList, elem(Num, Name)) &
+    .my_name(Me)
 <-
+    +isCooking(Name, CourseId);
+    .send(Name, achieve, cook(mainCourse, MLabel, CourseId, ServerName, Me)).
+
+
++!allocate(mainCourse, MLabel, CourseId, ServerName) :
+    MLabel == ratatouille
+<-
+    //isBeingCooked(Type, Label, CourseId, ServerName);
     .send(ServerName, tell, isBeingCooked(mainCourse, MLabel, CourseId));
     .send(ServerName, untell, isWaiting(mainCourse, MLabel, CourseId));
 
-    !cook(mainCourse, MLabel, CourseId, ServerName);
+    !cook(CourseId);
 
     .send(ServerName, tell, isReady(mainCourse, MLabel, CourseId));
     .send(ServerName, untell, isBeingCooked(mainCourse, MLabel, CourseId)).
 
 
 +!allocate(dessert, DLabel, CourseId, ServerName) :
-    true
+    job(PastryChefName, pastryChef) &               // pour savoir qui est le chef pâtissier
+    .my_name(Me)
 <-
-    .send(ServerName, tell, isBeingCooked(dessert, DLabel, CourseId));
-    .send(ServerName, untell, isWaiting(dessert, DLabel, CourseId));
+    +isCooking(PastryChefName, CourseId);
+    .send(PastryChefName, achieve, cook(DLabel, CourseId, ServerName, Me)).
 
-    !cook(dessert, DLabel, CourseId, ServerName);
 
-    .send(ServerName, tell, isReady(dessert, DLabel, CourseId));
-    .send(ServerName, untell, isBeingCooked(dessert, DLabel, CourseId)).
-    
++!allocate(dessert, DLabel, CourseId, ServerName) :
+    not job(_, pastryChef)
+<-
+    //wait(3000);
+    wait("+job(_, pastryChef)");
+    !allocate(dessert, DLabel, CourseId, ServerName).
 
 
 /* ************************************ */
 
 
-+!cook(Type, Label, CourseId, ServerName) :
++isReady(Name, CourseId) :
     true
 <-
-    .abolish(isWaiting(Type, Label, CourseId));
-    isBeingCooked(Type, Label, CourseId);
-    .wait(500);
-    .abolish(isBeingCooked(Type, Label, CourseId));
-    isReady(Type, Label, CourseId, ServerName).
+    -isCooking(Name, CourseId).
 
+
+/* ************************************ */
+
+
++!cook(CourseId) :
+    true
+<-
+    !!prepareMeals(CourseId);
+    !prepareVegetables(CourseId);
+    !prepareSauce(CourseId);
+    .print("It's ready !").
+
+
++!prepareMeals(CourseId) :
+    true
+<-
+    .print("I'm cooking meal for ", CourseId);
+    .wait(500).
+
+
++!prepareVegetables(CourseId) :
+    true
+<-
+    .print("I'm cooking vegetables for ", CourseId);
+    .wait(500).
+
+
++!prepareSauce(CourseId) :
+    true
+<-
+    .print("I'm cooking sauce for ", CourseId);
+    .wait(500).
 
